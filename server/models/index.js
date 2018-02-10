@@ -20,9 +20,22 @@ module.exports = {
   messages: {
     get: function (callback) {
       var messageGetQ = 'SELECT * FROM messages';
+      var roomID;
+      var userID;
+      var message;
       makeQuery(messageGetQ)
         .then(function (results) {
-          callback(results);
+          roomID = results[0].roomID;
+          userID = results[0].userID;
+          message = results[0].message;
+          var roomnameQ = `SELECT name FROM rooms WHERE ID = ${roomID}`;
+          var usernameQ = `SELECT name FROM users WHERE ID = ${userID}`;
+          return Promise.all([makeQuery(roomnameQ), makeQuery(usernameQ)]);
+        })
+        .then(function(array) {
+          var roomname = array[0][0].name;
+          var username = array[1][0].name;
+          callback({'message': message, 'username': username, 'roomname': roomname});
         });
     }, // a function which produces all the messages
     post: function (msgObj, callback) {
@@ -34,7 +47,11 @@ module.exports = {
       var userIndexQ = `SELECT ID FROM users WHERE name = \'${user}\'`;
       var roomIndexQ = `SELECT ID FROM rooms WHERE name = \'${room}\'`;
       
-      makeQuery(roomInsertQ)
+      var userInsertQ = `INSERT IGNORE INTO users(name) VALUES (\'${user}\')`;
+      makeQuery(userInsertQ)
+        .then(function() {
+          return makeQuery(roomInsertQ); 
+        })
         .then( function () {
           return Promise.all([makeQuery(roomIndexQ), makeQuery(userIndexQ)]);
         })

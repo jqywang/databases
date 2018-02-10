@@ -9,10 +9,16 @@ var headers = {
 };
 module.exports = {
   messages: {
+    // options: function(req, res) {
+    //   console.log
+    //   res.writeHead(200, headers);
+    //   res.end('Success!');
+    // },
     get: function (req, res) {
       // take in get request from client for messages
+      console.log('Receive get request');
       models.messages.get(function (results) {
-        res.writeHead(201, headers);
+        res.writeHead(200, headers);
         res.end(JSON.stringify(results));
       });
       // calls model.messages.get();

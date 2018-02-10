@@ -76,9 +76,9 @@ describe('Persistent Node Chat Server', function() {
       // the message we just inserted:
       request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
         var messageLog = JSON.parse(body);
-        console.log(messageLog);
-        expect(messageLog[0].message).to.equal('Men like you can never change!');
-        expect(messageLog[0].roomID).to.equal(2);
+        // console.log(messageLog);
+        expect(messageLog.message).to.equal('Men like you can never change!');
+        expect(messageLog.roomname).to.equal('Hello');
         done();
       });
     });
