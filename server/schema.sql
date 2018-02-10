@@ -33,6 +33,13 @@ CREATE TABLE messages (
 );
 INSERT INTO messages (message, userID, roomID)
 VALUES('test message', 1, 1);
+INSERT INTO messages (message, userID, roomID)
+VALUES('test message2', 1, 1);
+INSERT INTO messages (message, userID, roomID)
+VALUES('test message3', 1, 1);
+INSERT INTO messages (message, userID, roomID)
+VALUES('test message4', 1, 1);
+
 
 
 

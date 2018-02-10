@@ -16,19 +16,27 @@ module.exports = {
     // },
     get: function (req, res) {
       // take in get request from client for messages
-      console.log('Receive get request');
       models.messages.get(function (results) {
-        res.writeHead(200, headers);
-        res.end(JSON.stringify(results));
+        res.send(JSON.stringify(results));
       });
       // calls model.messages.get();
       // 
     }, // a function which handles a get request for all messages
     post: function (req, res) {
-      models.messages.post(req.body, function (result) {
-        res.writeHead(201, headers);
-        res.end(result.message);
+      var dataStream = '';
+      req.on('data', function(chunk){
+        dataStream += chunk;
       });
+      req.on('end', function () {
+        dataStream = JSON.parse(dataStream);
+        console.log(dataStream);
+        models.messages.post(dataStream, function (result) {
+          res.end(result.message);
+        });
+      });
+      
+      
+      
     } // a function which handles posting a message to the database
   },
 
@@ -39,7 +47,6 @@ module.exports = {
     },
     post: function (req, res) {
       models.users.post(req.body.username, function (results) {
-        res.writeHead(201, headers);
         res.end('success');
       });
     }

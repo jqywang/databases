@@ -6,7 +6,7 @@ var makeQuery = function (query) {
   return new Promise (function (resolve, reject) {
     db.query(query, function(err, result) {
       if (!err) {
-        console.log(query + 'resolved');
+        console.log(query + ' is resolved');
         resolve(result);
       } else {
         reject(err);
@@ -22,20 +22,32 @@ module.exports = {
       var messageGetQ = 'SELECT * FROM messages';
       var roomID;
       var userID;
-      var message;
+      var messageStringArray = [];
+      var promiseArray = [];
+      var messageArray = [];
       makeQuery(messageGetQ)
         .then(function (results) {
-          roomID = results[0].roomID;
-          userID = results[0].userID;
-          message = results[0].message;
-          var roomnameQ = `SELECT name FROM rooms WHERE ID = ${roomID}`;
-          var usernameQ = `SELECT name FROM users WHERE ID = ${userID}`;
-          return Promise.all([makeQuery(roomnameQ), makeQuery(usernameQ)]);
+          for (var i = 0; i < results.length; i++) {
+            roomID = results[i].roomID;
+            userID = results[i].userID;
+            messageStringArray.push(results[i].message);
+            var roomnameQ = `SELECT name FROM rooms WHERE ID = ${roomID}`;
+            var usernameQ = `SELECT name FROM users WHERE ID = ${userID}`;
+            promiseArray.push(makeQuery(roomnameQ));
+            promiseArray.push(makeQuery(usernameQ));
+          }
+          return Promise.all(promiseArray);
         })
         .then(function(array) {
-          var roomname = array[0][0].name;
-          var username = array[1][0].name;
-          callback({'message': message, 'username': username, 'roomname': roomname});
+          console.log(array);
+          for (var j = 0; j < promiseArray.length; j += 2) {
+            var roomname = array[j][0].name;
+            var username = array[j + 1][0].name;
+            var message = messageStringArray[Math.floor(j / 2)];
+            var singleMessage = {'message': message, 'username': username, 'roomname': roomname};
+            messageArray.push(singleMessage);
+          }
+          callback(messageArray);
         });
     }, // a function which produces all the messages
     post: function (msgObj, callback) {
@@ -59,7 +71,7 @@ module.exports = {
           var rIndex = array[0][0].ID;
           var uIndex = array[1][0].ID;
           var msgInsertQ = `INSERT INTO messages(message, userID, roomID)
-          VALUES(\"${message}\", ${rIndex}, ${uIndex})`;
+          VALUES(\"${message}\", ${uIndex}, ${rIndex})`;
           return makeQuery(msgInsertQ);
         })
         .then(function () {
