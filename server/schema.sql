@@ -6,7 +6,8 @@ USE chat;
 CREATE TABLE rooms(
   ID int NOT NULL AUTO_INCREMENT,
   name varchar(255),
-  PRIMARY KEY (ID)
+  PRIMARY KEY (ID),
+  UNIQUE (name)
 );
 
 INSERT INTO rooms(name)

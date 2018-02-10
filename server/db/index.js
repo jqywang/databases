@@ -2,11 +2,15 @@ var mysql = require('mysql');
 var request = require('request'); // You might need to npm install the request module!
 
 
-exports.dbConnection = mysql.createConnection({
+var dbConnection = mysql.createConnection({
   user: 'student',
   password: 'student',
   database: 'chat'
 });
+
+dbConnection.connect();
+
+module.exports = dbConnection;
 
 
 

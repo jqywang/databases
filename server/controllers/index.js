@@ -17,7 +17,8 @@ module.exports = {
     }, // a function which handles a get request for all messages
     post: function (req, res) {
       // take in req from client
-      
+      console.log('messageposet');
+      models.messages.post(req.body);
       // split up req data and send to model in 3 parts
       // calls model.messages.post();
     } // a function which handles posting a message to the database
@@ -29,20 +30,7 @@ module.exports = {
       // take in get request for users
     },
     post: function (req, res) {
-      // var body = '';
-      // console.log('post req' + req.body.username);
-      // req.on('data', function (err, data) {
-      //   if (err) {
-      //     console.log(err);
-      //     return;
-      //   }
-      //   console.log('data: ' + data);
-      //   body += data;
-      // });
-      // req.on('end', function () {
-      //   body = JSON.parse(body);
-      //   models.users.post(body.username);
-      // });
+      console.log('users post');
       models.users.post(req.body.username);
       res.writeHead(201, headers);
       res.end(req.body.username);
