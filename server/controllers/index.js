@@ -11,16 +11,18 @@ module.exports = {
   messages: {
     get: function (req, res) {
       // take in get request from client for messages
-      
+      models.messages.get(function (results) {
+        res.writeHead(201, headers);
+        res.end(JSON.stringify(results));
+      });
       // calls model.messages.get();
       // 
     }, // a function which handles a get request for all messages
     post: function (req, res) {
-      // take in req from client
-      console.log('messageposet');
-      models.messages.post(req.body);
-      // split up req data and send to model in 3 parts
-      // calls model.messages.post();
+      models.messages.post(req.body, function (result) {
+        res.writeHead(201, headers);
+        res.end(result.message);
+      });
     } // a function which handles posting a message to the database
   },
 
@@ -30,10 +32,10 @@ module.exports = {
       // take in get request for users
     },
     post: function (req, res) {
-      console.log('users post');
-      models.users.post(req.body.username);
-      res.writeHead(201, headers);
-      res.end(req.body.username);
+      models.users.post(req.body.username, function (results) {
+        res.writeHead(201, headers);
+        res.end('success');
+      });
     }
   }
 };
