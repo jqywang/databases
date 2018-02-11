@@ -42,8 +42,6 @@ VALUES('test message4', 1, 1);
 
 
 
-
-
 /*  Execute this file from the command line by typing:
  *    mysql -u student < server/schema.sql
  *  to create the database and the tables.*/
